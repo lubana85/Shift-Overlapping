@@ -1,0 +1,218 @@
+---
+layout: default
+---
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="overlapping.js" ></script>
+    <script src="shift.js" ></script>
+    <script>
+      function checkOverlapping() {
+        
+        // Get the entered data
+        var employee1 = document.getElementById('employee1').value;
+        var department1 = document.getElementById('department1').value;
+        var startTime1 = $('#datetimepicker1').data('DateTimePicker').date();
+        var endTime1 = $('#datetimepicker2').data('DateTimePicker').date();
+        
+        var employee2 = document.getElementById('employee2').value;
+        var department2 = document.getElementById('department2').value;
+        var startTime2 = $('#datetimepicker3').data('DateTimePicker').date();
+        var endTime2 = $('#datetimepicker4').data('DateTimePicker').date();
+       
+        // Validation Shift one
+        //-----------------------------------------------
+        
+        var error = '';
+        if (startTime1) {
+          startTime1 = startTime1.unix();
+        }
+        else {
+          error += 'Start Time should not be empty <br/>';
+        }
+        if (endTime1) {
+          endTime1 = endTime1.unix();
+        }
+        else {
+          error += 'End Time should not be empty <br/>';
+        }  
+        if (startTime1 > endTime1)
+          error += 'Start Time should be before End time <br/>';
+          
+        //-----------------------------------------------
+        // Validation Shift two
+        //-----------------------------------------------
+        
+        if (startTime2) {
+          startTime2 = startTime2.unix();
+        }
+        else {
+          error += 'Start Time should not be empty  <br/>';
+        }
+       
+        if (endTime2) {
+          endTime2 = endTime2.unix();
+        }
+        else {
+          error += 'End Time should not be empty  <br/>';
+        }  
+        if (startTime2 > endTime2)
+          error += 'Start Time should be before End time <br/>';
+        
+        //-----------------------------------------------
+        
+        if (error !== '')
+          document.getElementById('result').innerHTML = error;
+        else {
+           var shift1 = new Shift(Math.random(), employee1, department1, startTime1, endTime1);
+           var shift2 = new Shift(Math.random(), employee2, department2, startTime2, endTime2);
+        
+           var result = isOverlapping(shift1, shift2);
+           switch (result) {
+             case true:
+              result = 'There is Overlapping';
+              break;
+             case false:
+              result = 'There is NO Overlapping';
+              break;
+             default:
+              result = '';
+              break;
+           }
+           document.getElementById('result').innerHTML = 'Result: ' + result.toString();
+        }
+      }
+    </script>
+    <style>
+    .container {
+      width: 600px;
+    }
+    .form-control {
+      width: 400px;
+    }
+    .result {
+      padding: 10px;
+      font-weight: bold;
+      color: red;
+    }
+    </style>
+  </head>
+  <body>
+    <h3>Overlapping Shift</h3>
+    <h3>Shift One</h3>
+    
+    <div class="container">
+    <div>Employee ID:</div>
+    <div><input type='text' class="form-control" name="employee1" id="employee1" value="1"/></div>
+    <div>Department:</div>
+    <div>
+      <select class="form-control" name="department1" id="department1">
+        <option value="1">HR Department</option>
+        <option value="2">IT Department</option>
+        <option value="3">Sales Department</option>
+      </select>
+    </div>
+    <div>Start Time:</div>
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" id="startTime1" value="10/02/2018 8:00 AM"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
+    </div>
+    
+    <div>End Time:</div>
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker2'>
+                    <input type='text' class="form-control" id="endTime1" value="10/02/2018 11:00 AM" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker2').datetimepicker();
+            });
+        </script>
+    </div>
+    </div>
+    
+    <h3>Shift Two</h3>
+    
+    <div class="container">
+    <div>Employee ID:</div>
+    <div><input type='text' class="form-control" name="employee2" id="employee2" value="1"/></div>
+    <div>Department:</div>
+    <div>
+      <select class="form-control" name="department2" id="department2">
+        <option>HR Department</option>
+        <option>IT Department</option>
+        <option>Sales Department</option>
+      </select>
+    </div>
+    <div>Start Time:</div>
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker3'>
+                    <input type='text' class="form-control" id="startTime2" value="10/02/2018 10:00 AM"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker3').datetimepicker();
+            });
+        </script>
+    </div>
+    
+    <div>End Time:</div>
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker4'>
+                    <input type='text' class="form-control" id="endTime2" value="10/02/2018 11:00 AM" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker4').datetimepicker();
+            });
+        </script>
+    </div>
+    
+    <div><input type="button" onclick="checkOverlapping()" value="Check Overlapping" /></div>
+    
+    <div id="result" class="result">
+    </div>
+
+  </div>
+  </body>
+  </html>
