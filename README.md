@@ -13,5 +13,5 @@ The following line represents not overlapping case:
 
 isOverlapping function returns the opposite.
 
-<a htref="https://lubana85.github.io/Shift-Overlapping/"> Example </a>
+<a href="https://lubana85.github.io/Shift-Overlapping/"> Example </a>
 
